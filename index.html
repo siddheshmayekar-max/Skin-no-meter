@@ -62,9 +62,9 @@
         justify-content: center;
         padding: 24px;
         transition: background 0.5s ease;
-          min-height: 100vh;      /* fallback */
-  min-height: 100svh;     /* small viewport height (iOS safe) */
-  min-height: 100dvh;   
+        min-height: 100vh; /* fallback */
+        min-height: 100svh; /* small viewport height (iOS safe) */
+        min-height: 100dvh;
       }
 
       /* Skip */
@@ -484,6 +484,7 @@
       const text = document.getElementById("introText");
       const nextBtn = document.getElementById("nextBtn");
       const backBtn = document.getElementById("backBtn");
+      const skipBtn = document.querySelector(".skip-btn");
       const termsRow = document.getElementById("termsRow");
       const dots = document.querySelectorAll(".dot");
 
@@ -526,10 +527,10 @@
       function updateUI() {
         const s = steps[step];
 
-        // Background
+        /* Background */
         introScreen.style.background = `url("${s.bg}") center / cover no-repeat`;
 
-        // Content
+        /* Content */
         title.innerHTML = s.title;
         text.innerHTML = s.text;
 
@@ -539,7 +540,7 @@
         title.style.fontFamily = s.titleFont;
         text.style.fontFamily = s.textFont;
 
-        // Layout control
+        /* Layout control */
         introContent.style.display = "flex";
         introContent.style.flexDirection = "column";
         introContent.style.alignItems = "center";
@@ -550,31 +551,36 @@
         introContent.style.maxWidth = s.width || "100%";
         introContent.style.margin = "0 auto";
 
-        // Button text
+        /* Button text */
         nextBtn.textContent = s.btn;
 
-        // Dots
+        /* Pagination dots */
         dots.forEach((dot, i) => {
           dot.classList.toggle("active", i === step);
         });
 
-        // Back button
+        /* Back button */
         backBtn.style.display = step === 0 ? "none" : "flex";
 
-        // Terms only on step 3
+        /* Skip button (hide on 3rd screen) */
+        skipBtn.style.display = step === 2 ? "none" : "flex";
+
+        /* Terms only on 3rd screen */
         termsRow.style.display = step === 2 ? "flex" : "none";
       }
 
+      /* Next button */
       nextBtn.addEventListener("click", () => {
         if (step < steps.length - 1) {
           step++;
           updateUI();
         } else {
           console.log("Get Started clicked");
-          // redirect or action here
+          // redirect logic here
         }
       });
 
+      /* Back button */
       backBtn.addEventListener("click", () => {
         if (step > 0) {
           step--;
@@ -582,10 +588,16 @@
         }
       });
 
-      // Initial render
+      /* Skip button → jump to 3rd screen */
+      skipBtn.addEventListener("click", () => {
+        step = 2;
+        updateUI();
+      });
+
+      /* Initial render */
       updateUI();
 
-      // Recalculate on resize (mobile / tablet rotation)
+      /* Handle screen rotation */
       window.addEventListener("resize", updateUI);
     </script>
   </body>
