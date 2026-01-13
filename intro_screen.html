@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>DermaCare Intro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      @font-face {
+        font-family: "Arima-Bold";
+        src: url("./fonts/Arima-Bold.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Arima-SemiBold";
+        src: url("./fonts/Arima-SemiBold.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "NotoSans-Medium";
+        src: url("./fonts/NotoSans-Medium.ttf") format("truetype");
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+      }
+
+      .intro-screen {
+        height: 100vh;
+        width: 100vw;
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 24px;
+        transition: background 0.5s ease;
+      }
+
+      /* Skip */
+      .skip-btn {
+        position: absolute;
+        top: 34px;
+        right: 30px;
+        width: 110px;
+        height: 45px;
+        background: rgba(185, 135, 102, 0.74);
+        border-radius: 20px;
+        border: none;
+        color: #fff;
+        font-size: 18px;
+        z-index: 2;
+      }
+
+      .skip-btn::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        border: 2px dashed #fff;
+        border-radius: 24px;
+      }
+
+      /* Back */
+      .back-btn {
+        position: absolute;
+        top: 34px;
+        left: 30px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.35);
+        border: 2px dashed #fff;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+      }
+
+      /* Card */
+      .intro-card {
+        width: 100%;
+        max-width: 930px;
+        padding: 32px 28px 24px;
+        text-align: center;
+        border-radius: 48px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        position: relative;
+        transition: all 0.35s ease;
+      }
+
+      .intro-card::before {
+        content: "";
+        position: absolute;
+        inset: -3.5px;
+        border-radius: 54px;
+        border: 5px dashed #fff;
+      }
+
+      .intro-card h2 {
+        color: #fff;
+        margin-bottom: 10px;
+        transition: font-size 0.3s ease;
+      }
+
+      .intro-card p {
+        color: #fff;
+        line-height: 1.5;
+        margin-bottom: 20px;
+        transition: font-size 0.3s ease;
+      }
+
+      .next-btn {
+        font-family: "Arima-SemiBold";
+        width: 85%;
+        z-index: 1;
+        border: none;
+        border-radius: 50px;
+        padding: 18px 0;
+        background: #fff;
+        color: #753005;
+        font-size: 30px;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+
+      .pagination-dots {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .dot {
+        width: 14px;
+        height: 14px;
+        background: #fff;
+        border-radius: 50%;
+      }
+
+      .dot.active {
+        background-color: #b98766;
+        border: 1.3px dashed #fff;
+      }
+
+      /* Screen 3 */
+      .terms {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #fff;
+        font-size: 16px;
+        margin-bottom: 14px;
+      }
+
+      /* Hide checkbox BUT keep it clickable */
+      .terms input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        width: 22px;
+        height: 22px;
+        cursor: pointer;
+      }
+
+      /* Label setup */
+      .terms label {
+        position: relative;
+        padding-left: 34px;
+        cursor: pointer;
+        text-decoration: underline;
+      }
+
+      /* Checkbox box */
+      .terms label::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 22px;
+        height: 22px;
+        border: 2px solid #fff;
+        border-radius: 6px;
+        background: transparent;
+      }
+
+      /* Checkmark */
+      .terms input[type="checkbox"]:checked + label::after {
+        content: "✓";
+        position: absolute;
+        left: 5px;
+        top: 50%;
+        transform: translateY(-55%);
+        font-size: 16px;
+        color: #fff;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <section class="intro-screen" id="introScreen">
+      <button class="back-btn" id="backBtn">
+        <i class="fa-solid fa-arrow-left" style="color: #fff"></i>
+      </button>
+
+      <button class="skip-btn">Skip</button>
+
+      <div class="container d-flex justify-content-center">
+        <div
+          class="intro-card d-flex flex-column justify-content-between align-items-center"
+          id="introCard"
+        >
+          <div>
+            <h2 id="introTitle"></h2>
+            <p id="introText"></p>
+          </div>
+
+          <div class="terms" id="termsRow">
+            <input type="checkbox" id="termsCheck" />
+            <label for="termsCheck"
+              >I agree to the terms &amp; conditions.</label
+            >
+          </div>
+
+          <button class="next-btn" id="nextBtn"></button>
+
+          <div class="pagination-dots mt-2">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      const introScreen = document.getElementById("introScreen");
+      const introCard = document.getElementById("introCard");
+      const title = document.getElementById("introTitle");
+      const text = document.getElementById("introText");
+      const nextBtn = document.getElementById("nextBtn");
+      const backBtn = document.getElementById("backBtn");
+      const termsRow = document.getElementById("termsRow");
+      const dots = document.querySelectorAll(".dot");
+
+      let step = 0;
+
+      const steps = [
+        {
+          bg: "./assets/introbg-1.png",
+          title: "Hi,Welcome to<br>DermaCare",
+          text: "Your AI-powered solution for<br>Personalized Skin Health Assessment",
+          titleSize: "60px",
+          textSize: "25px",
+          titleFont: "Arima-SemiBold",
+          textFont: "NotoSans-Medium",
+          cardHeight: "420px",
+          btn: "Next",
+        },
+        {
+          bg: "./assets/introbg-2.png",
+          title: "Snap Your Selfie!",
+          text: "Upload your photo and let AI deliver a personalized analysis of your skin health and overall score!",
+          titleSize: "58px",
+          textSize: "30px",
+          titleFont: "Arima-Bold",
+          textFont: "Arima-SemiBold",
+          cardHeight: "420px",
+          btn: "Next",
+        },
+        {
+          bg: "./assets/introbg-3.png",
+          title: "Discover Your Skin’s<br>Needs with AI",
+          text: "Get personalized skin care insights and<br>recommendations tailored to you.",
+          titleSize: "56px",
+          textSize: "26px",
+          titleFont: "Arima-SemiBold",
+          textFont: "NotoSans-Medium",
+          cardHeight: "460px",
+          btn: "Get Started",
+        },
+      ];
+
+      function updateUI() {
+        const s = steps[step];
+
+        introScreen.style.background = `url("${s.bg}") top center / cover no-repeat`;
+
+        introCard.style.height = s.cardHeight;
+
+        title.innerHTML = s.title;
+        text.innerHTML = s.text;
+
+        title.style.fontSize = s.titleSize;
+        text.style.fontSize = s.textSize;
+
+        /* ✅ FONT FAMILY CONTROL */
+        title.style.fontFamily = s.titleFont || "Arima-Bold";
+        text.style.fontFamily = s.textFont || "NotoSans-Medium";
+
+        nextBtn.textContent = s.btn;
+
+        dots.forEach((d, i) => d.classList.toggle("active", i === step));
+
+        backBtn.style.display = step === 0 ? "none" : "flex";
+        termsRow.style.display = step === 2 ? "flex" : "none";
+      }
+
+      nextBtn.onclick = () => {
+        if (step < steps.length - 1) {
+          step++;
+          updateUI();
+        } else {
+          console.log("Get Started");
+        }
+      };
+
+      backBtn.onclick = () => {
+        if (step > 0) {
+          step--;
+          updateUI();
+        }
+      };
+
+      updateUI();
+    </script>
+  </body>
+</html>
