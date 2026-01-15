@@ -48,27 +48,23 @@
       html,
       body {
         width: 100%;
-        touch-action: manipulation;
-        overflow-y: auto;
-      }
 
-      #section-2 {
-        background: linear-gradient(180deg, #f0ccb2 0%, #edcaae 100%);
+        touch-action: manipulation;
+        overflow-x: hidden;
       }
 
       .intro-screen {
-        position: fixed;
-        inset: 0;
-        width: 100%;
-        height: 100svh;
-        z-index: 9999;
-
+        max-height: 100%;
+        width: 100vw;
+        position: relative;
         display: flex;
         align-items: flex-end;
         justify-content: center;
         padding: 24px;
-
         transition: background 0.5s ease;
+        min-height: 100vh; /* fallback */
+        min-height: 100svh; /* small viewport height (iOS safe) */
+        min-height: 100dvh;
       }
 
       /* Skip */
@@ -432,203 +428,10 @@
           padding-left: 26px;
         }
       }
-
-      .screen {
-        width: 100%;
-        max-width: 390px;
-        height: 100svh;
-        padding: 30px 20px; /* ✅ MOBILE DEFAULT */
-        display: flex;
-        flex-direction: column;
-        position: relative;
-      }
-      /* Tablets & large devices (>= 768px, includes 1200x1920) */
-      @media (min-width: 768px) {
-        .screen {
-          padding: 60px 20px;
-        }
-      }
-
-      /* Orbit background */
-      .screen::before {
-        content: "";
-        position: absolute;
-        top: -180px;
-        left: -430px;
-        width: 420px;
-        aspect-ratio: 1;
-        background: url("assets/orbit-bg.png") center / contain no-repeat;
-        pointer-events: none;
-        z-index: 0;
-      }
-
-      .screen > * {
-        position: relative;
-        z-index: 1;
-      }
-
-      /* Progress */
-      .progress {
-        height: 6px;
-        background-color: #eeb58d;
-        border-radius: 10px;
-      }
-
-      .progress-bar {
-        background-color: rgba(117, 48, 5, 1);
-        border-radius: 10px;
-      }
-
-      h1 {
-        font-size: 28px;
-        font-weight: 400;
-        color: rgba(117, 48, 5, 1);
-        text-align: center;
-        font-family: "Arima-Bold";
-      }
-
-      .subtitle {
-        font-size: 14px;
-        font-family: "NotoSans-Medium";
-
-        color: rgba(117, 48, 5, 1);
-        text-align: center;
-      }
-
-      /* Avatar */
-      .outer-circle {
-        width: 260px;
-        aspect-ratio: 1;
-        border-radius: 50%;
-        background-color: #f5d3b9;
-        margin: 24px auto;
-        display: grid;
-        place-items: center;
-        position: relative;
-      }
-
-      .outer-circle::before {
-        content: "";
-        width: 220px;
-        aspect-ratio: 1;
-        border-radius: 50%;
-        background-color: #f9e1d0;
-        position: absolute;
-      }
-
-      .photo-circle {
-        width: 180px;
-        aspect-ratio: 1;
-        border-radius: 50%;
-        background: url("assets/user-avatar.png") center / 115% no-repeat,
-          linear-gradient(180deg, #ffb27a, #f3c09c);
-        position: relative;
-        z-index: 1;
-      }
-
-      .photo-circle::after {
-        content: "";
-        position: absolute;
-        inset: 0px;
-        border-radius: 50%;
-        border: 2.5px dashed rgba(255, 255, 255, 0.95);
-      }
-
-      /* ===== INPUT WITH PSEUDO BORDER ===== */
-      .input-wrap {
-        position: relative;
-        margin-bottom: 18px;
-      }
-
-      /* dashed outline */
-      .input-wrap::before {
-        content: "";
-        position: absolute;
-        inset: -1px;
-        border-radius: 34px;
-        border: 1.5px dashed rgba(255, 255, 255, 0.85);
-        pointer-events: none;
-        z-index: 3;
-      }
-
-      /* 🔥 SHADOW LAYER (BEHIND INPUT) */
-      .input-wrap::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: 28px;
-        background: transparent;
-        box-shadow: 0 6px 10px rgba(122, 58, 11, 0.18);
-        z-index: 1; /* behind input */
-      }
-
-      /* actual input */
-      .form-control {
-        height: 56px;
-        border-radius: 28px;
-        border: none;
-        background: #e8c3a4;
-        padding-left: 30px;
-        font-size: 16px;
-        color: #8b4a1c;
-
-        position: relative;
-        z-index: 2;
-      }
-
-      .form-control::placeholder {
-        color: #b07a55;
-      }
-
-      .form-control:focus {
-        outline: none;
-        box-shadow: 0 6px 12px rgba(122, 58, 11, 0.25);
-        background: #eccbb0;
-      }
-
-      .form-control.error {
-        box-shadow: 0 0 0 2px rgba(164, 60, 60, 0.45);
-      }
-
-      /* ===== NEXT BUTTON RESPONSIVE FIX ===== */
-      .section2-next-btn {
-        height: 58px;
-        border-radius: 30px;
-        font-size: 18px;
-        font-weight: 600;
-        color: #7a3a0b;
-        background: #fff;
-        border: none;
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
-      }
-
-      .section2-next-btn:focus,
-      .section2-next-btn:focus-visible,
-      .section2-next-btn:active {
-        outline: none !important;
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12) !important;
-        background: #fff;
-      }
-
-      /* Mobile: stick to bottom with safe spacing */
-      @media (max-width: 576px) {
-        .section2-next-btn {
-          position: sticky;
-          bottom: 16px; /* safe gap from bottom */
-        }
-      }
-
-      /* Tablet & above: normal flow, aligned at end */
-      @media (min-width: 577px) {
-        .section2-next-btn {
-          position: static;
-        }
-      }
     </style>
   </head>
 
   <body>
-    <!-- ================= SECTION 1 ================= -->
     <section class="intro-screen" id="introScreen">
       <button class="back-btn" id="backBtn">
         <i class="fa-solid fa-arrow-left" style="color: #fff"></i>
@@ -672,9 +475,10 @@
         </div>
       </div>
     </section>
-    <!-- ================= END SECTION 1 ================= -->
+
     <script>
       const introScreen = document.getElementById("introScreen");
+      const introCard = document.getElementById("introCard");
       const introContent = document.getElementById("introContent");
       const title = document.getElementById("introTitle");
       const text = document.getElementById("introText");
@@ -682,11 +486,9 @@
       const backBtn = document.getElementById("backBtn");
       const skipBtn = document.querySelector(".skip-btn");
       const termsRow = document.getElementById("termsRow");
-      const termsCheck = document.getElementById("termsCheck");
       const dots = document.querySelectorAll(".dot");
 
       let step = 0;
-      let termsErrorBox = null;
 
       const steps = [
         {
@@ -725,82 +527,60 @@
       function updateUI() {
         const s = steps[step];
 
+        /* Background */
         introScreen.style.background = `url("${s.bg}") center / cover no-repeat`;
 
+        /* Content */
         title.innerHTML = s.title;
         text.innerHTML = s.text;
 
         title.style.fontSize = s.titleSize;
         text.style.fontSize = s.textSize;
+
         title.style.fontFamily = s.titleFont;
         text.style.fontFamily = s.textFont;
 
+        /* Layout control */
+        introContent.style.display = "flex";
+        introContent.style.flexDirection = "column";
         introContent.style.alignItems = "center";
         introContent.style.justifyContent =
-          step === steps.length - 1 ? "flex-start" : "center";
+          step === 2 ? "flex-start" : "center";
 
         introContent.style.width = s.width || "100%";
         introContent.style.maxWidth = s.width || "100%";
+        introContent.style.margin = "0 auto";
 
+        /* Button text */
         nextBtn.textContent = s.btn;
 
-        dots.forEach((dot, i) => dot.classList.toggle("active", i === step));
-
-        backBtn.style.display = step === 0 ? "none" : "flex";
-        skipBtn.style.display = step === steps.length - 1 ? "none" : "flex";
-        termsRow.style.display = step === steps.length - 1 ? "flex" : "none";
-
-        removeTermsError();
-      }
-
-      function showTermsError() {
-        if (termsErrorBox) return;
-
-        termsErrorBox = document.createElement("div");
-        termsErrorBox.textContent = "Please accept terms";
-
-        Object.assign(termsErrorBox.style, {
-          position: "absolute",
-          top: "100%",
-          marginTop: "6px",
-          background: "rgba(0,0,0,0.75)",
-          color: "#fff",
-          padding: "6px 10px",
-          borderRadius: "6px",
-          fontSize: "12px",
-          whiteSpace: "nowrap",
-          zIndex: "9999",
+        /* Pagination dots */
+        dots.forEach((dot, i) => {
+          dot.classList.toggle("active", i === step);
         });
 
-        termsRow.style.position = "relative";
-        termsRow.appendChild(termsErrorBox);
+        /* Back button */
+        backBtn.style.display = step === 0 ? "none" : "flex";
+
+        /* Skip button (hide on 3rd screen) */
+        skipBtn.style.display = step === 2 ? "none" : "flex";
+
+        /* Terms only on 3rd screen */
+        termsRow.style.display = step === 2 ? "flex" : "none";
       }
 
-      function removeTermsError() {
-        if (termsErrorBox) {
-          termsErrorBox.remove();
-          termsErrorBox = null;
-        }
-      }
-
+      /* Next button */
       nextBtn.addEventListener("click", () => {
-        if (step === steps.length - 1) {
-          if (!termsCheck.checked) {
-            showTermsError();
-            return;
-          }
-
-          removeTermsError();
-
-          // 👉 REDIRECT TO FORM PAGE
-          window.location.href = "form.html";
-          return;
+        if (step < steps.length - 1) {
+          step++;
+          updateUI();
+        } else {
+          console.log("Get Started clicked");
+          // redirect logic here
         }
-
-        step++;
-        updateUI();
       });
 
+      /* Back button */
       backBtn.addEventListener("click", () => {
         if (step > 0) {
           step--;
@@ -808,24 +588,16 @@
         }
       });
 
+      /* Skip button → jump to 3rd screen */
       skipBtn.addEventListener("click", () => {
-        step = steps.length - 1;
+        step = 2;
         updateUI();
       });
 
-      termsCheck.addEventListener("change", removeTermsError);
-
-      document.addEventListener("click", (e) => {
-        if (
-          termsErrorBox &&
-          !termsRow.contains(e.target) &&
-          e.target !== nextBtn
-        ) {
-          removeTermsError();
-        }
-      });
-
+      /* Initial render */
       updateUI();
+
+      /* Handle screen rotation */
       window.addEventListener("resize", updateUI);
     </script>
   </body>

@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capture Selfie</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+      /* ================= FONT ================= */
+      @font-face {
+        font-family: "ArimaBold";
+        src: url("fonts/Arima-Bold.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "NotoSans-Medium";
+        src: url("fonts/NotoSans-Medium.ttf") format("truetype");
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "ArimaBold", sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        background: linear-gradient(180deg, #f0ccb2 0%, #edcaae 100%);
+        position: relative;
+        overflow-x: hidden;
+        overflow: hidden;
+      }
+
+      /* ================= ORBIT BG (OUTSIDE SECTION) ================= */
+      .orbit-bg {
+        position: absolute;
+        top: -310px;
+        left: -330px;
+        width: 620px;
+        height: 620px;
+        background: url(assets/orbit-bg.png) no-repeat center;
+        background-size: contain;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      /* ================= BACK BUTTON (OUTSIDE SECTION) ================= */
+      .back-btn {
+        position: absolute;
+        top: 40px;
+        left: 33px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 2px dashed rgba(255, 255, 255, 0.9);
+        background: #b98766bd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 2;
+      }
+
+      .back-btn::before {
+        content: "";
+        font-size: 18px;
+        color: #ffffff;
+      }
+
+      /* ================= SECTION ================= */
+      section.capture-section {
+        position: relative;
+        max-width: 520px;
+        height: 100vh;
+        margin: 0 auto;
+        padding: 32px 24px;
+        text-align: center;
+        z-index: 1;
+      }
+
+      /* ================= TITLE ================= */
+      h1 {
+        margin-top: 110px;
+        font-size: 50px;
+        line-height: 1.25;
+        color: #753005;
+        margin-bottom: 36px;
+      }
+
+      /* ================= CAMERA STACK ================= */
+      .camera-stack {
+        width: 470px;
+        height: 470px;
+        margin: 0 auto 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .outer-circle {
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        background: #f5d3b9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        aspect-ratio: 1 / 1; /* 🔥 forces perfect circle */
+        border-radius: 50%;
+        background-color: #f5d3b9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0; /* 🔥 prevents flex distortion */
+      }
+
+      .inner-circle {
+        width: 350px;
+        height: 350px;
+        border-radius: 50%;
+        background: #f9e1d0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .photo-circle {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: linear-gradient(180deg, #ffb27a, #f3c09c);
+        position: relative;
+        overflow: hidden;
+      }
+
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        transform: scaleX(-1);
+      }
+
+      .photo-ring {
+        position: absolute;
+        inset: 0px;
+        border-radius: 50%;
+        border: 3px dashed rgba(255, 255, 255, 0.9);
+        pointer-events: none;
+      }
+
+      /* ================= TEXT ================= */
+      .instruction {
+        font-size: 24px;
+        color: #753005;
+        line-height: 1.6;
+        margin-bottom: 28px;
+        font-family: "NotoSans-Medium";
+      }
+
+      /* ================= BUTTON ================= */
+      .capture-btn {
+        width: 100%;
+        padding: 16px 0;
+        border-radius: 30px;
+        border: none;
+        font-size: 36px;
+        background: #ffffff;
+        color: #753005;
+        cursor: pointer;
+      }
+
+      /* ================= AFTER CAPTURE BUTTONS ================= */
+
+      .after-capture {
+        display: none;
+        margin-top: 16px;
+      }
+
+      /* Recapture button (dashed) */
+      .btn-recapture {
+        width: 100%;
+        padding: 18px 0;
+        margin-bottom: 14px;
+
+        background: transparent;
+        border: 3px dashed #ffffff;
+        border-radius: 40px;
+
+        font-size: 36px;
+        color: #7a3a12;
+
+        cursor: pointer;
+
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Analyze button (solid) */
+      .btn-analyze {
+        width: 100%;
+        padding: 20px 0;
+
+        background: #ffffff;
+        border: none;
+        border-radius: 40px;
+
+        font-size: 36px;
+        color: #7a3a12;
+
+        cursor: pointer;
+
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+      }
+
+      /* Disabled analyze state */
+      .btn-analyze:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      /* ================= SCANNING OVERLAY ================= */
+      #scanOverlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(2px);
+
+        display: none;
+        align-items: center;
+        justify-content: center;
+
+        z-index: 9999;
+      }
+
+      #scanOverlay img {
+        width: 260px;
+        height: auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Orbit background -->
+    <div class="orbit-bg"></div>
+
+    <!-- Back button -->
+    <div class="back-btn" onclick="history.back()">
+      <i class="fa-solid fa-arrow-left fa-2xl" style="color: #ffffff"></i>
+    </div>
+
+    <!-- Main content -->
+    <section class="capture-section">
+      <h1>Capture your<br />natural selfie!</h1>
+
+      <div class="camera-stack">
+        <div class="outer-circle">
+          <div class="inner-circle">
+            <div class="photo-circle">
+              <video id="webcam" autoplay playsinline></video>
+              <div class="photo-ring"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p id="instruction" class="instruction">
+        Click the picture in natural light and<br />
+        keep a neutral expression
+      </p>
+
+      <!-- Capture button -->
+      <button id="captureBtn" class="capture-btn" disabled>Capture</button>
+
+      <!-- After capture buttons -->
+      <div id="afterCaptureBtns" class="after-capture">
+        <button id="recaptureBtn" class="btn-recapture">Recapture</button>
+
+        <button id="analyzeBtn" class="btn-analyze">Analyze</button>
+      </div>
+
+      <!-- ✅ THIS WAS MISSING (IMPORTANT) -->
+      <p id="status" style="display: none"></p>
+      <canvas id="canvas" style="display: none"></canvas>
+    </section>
+
+    <!-- OpenCV -->
+    <script
+      async
+      src="https://docs.opencv.org/4.5.2/opencv.js"
+      onload="onOpenCvReady();"
+    ></script>
+
+    <script>
+      window.addEventListener("beforeunload", () => {
+        if (stream) {
+          stream.getTracks().forEach((track) => track.stop());
+        }
+      });
+
+      let cv = null;
+      let stream = null;
+
+      // Get parameters from URL query string
+      const urlParams = new URLSearchParams(window.location.search);
+      const age = parseInt(urlParams.get("age")) || 30;
+      const gender = urlParams.get("gender") || "male";
+      const skinType = urlParams.get("skin_type") || "normal";
+
+      const webcam = document.getElementById("webcam");
+      const canvas = document.getElementById("canvas");
+      const captureBtn = document.getElementById("captureBtn");
+
+      const afterCaptureBtns = document.getElementById("afterCaptureBtns");
+      const recaptureBtn = document.getElementById("recaptureBtn");
+      const analyzeBtn = document.getElementById("analyzeBtn");
+      const status = document.getElementById("status");
+      const instruction = document.getElementById("instruction");
+
+      function onOpenCvReady() {
+        cv = window.cv;
+
+        // ⏳ Give browser time to re-detect camera devices
+        setTimeout(() => {
+          initWebcam();
+        }, 500);
+      }
+
+      async function initWebcam() {
+        try {
+          // 🔥 VERY IMPORTANT: stop old stream first
+          if (stream) {
+            stream.getTracks().forEach((track) => track.stop());
+          }
+
+          // ✅ Request camera (most stable)
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+          });
+
+          webcam.srcObject = stream;
+
+          captureBtn.disabled = false;
+          analyzeBtn.disabled = true;
+        } catch (error) {
+          console.error("Camera error:", error);
+          alert("Camera not detected. Please refresh or check permissions.");
+        }
+      }
+
+      async function captureAndAnalyze() {
+        const ctx = canvas.getContext("2d");
+        canvas.width = webcam.videoWidth;
+        canvas.height = webcam.videoHeight;
+
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(webcam, 0, 0);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+        webcam.pause();
+
+        // 🔥 HIDE instruction
+        document.getElementById("instruction").style.display = "none";
+
+        captureBtn.style.display = "none";
+        afterCaptureBtns.style.display = "block";
+
+        analyzeBtn.disabled = false; // ✅ ADD HERE
+      }
+
+      analyzeBtn.addEventListener("click", () => {
+        if (!cv) {
+          alert("OpenCV not loaded yet");
+          return;
+        }
+
+        const overlay = document.getElementById("scanOverlay");
+
+        // 🔥 SHOW SCANNING GIF
+        overlay.style.display = "flex";
+
+        // ⏳ WAIT 4.5 SECONDS
+        setTimeout(() => {
+          try {
+            const image = cv.imread(canvas);
+
+            const darkSpots = detectDarkSpotsAndScore(image, skinType);
+            const dullness = getSkinDullnessScore(image, age, skinType);
+            const hydration = getSkinHydrationScore(
+              image,
+              age,
+              gender,
+              skinType
+            );
+            const unevenTone = getUnevenSkinToneScore(
+              image,
+              age,
+              gender,
+              skinType
+            );
+            const wrinkles = getWrinkleScore(image);
+
+            const overall = Math.round(
+              (100 - darkSpots) * 0.2 +
+                (100 - dullness) * 0.2 +
+                hydration * 0.2 +
+                (100 - unevenTone) * 0.2 +
+                (100 - wrinkles) * 0.2
+            );
+
+            image.delete();
+
+            // ❌ HIDE SCANNING GIF
+            overlay.style.display = "none";
+
+            // ✅ RESULT (replace alert with slider later)
+            alert(
+              `Dark Spots: ${darkSpots}\n` +
+                `Dullness: ${dullness}\n` +
+                `Hydration: ${hydration}\n` +
+                `Uneven Tone: ${unevenTone}\n` +
+                `Wrinkles: ${wrinkles}\n` +
+                `Overall: ${overall}`
+            );
+          } catch (err) {
+            overlay.style.display = "none";
+            console.error(err);
+            alert("Analysis failed");
+          }
+        }, 4500); // ⏱️ 4.5 sec delay
+      });
+
+      recaptureBtn.addEventListener("click", () => {
+        webcam.play();
+
+        instruction.style.display = "block";
+
+        afterCaptureBtns.style.display = "none";
+        captureBtn.style.display = "block";
+        analyzeBtn.disabled = true;
+      });
+
+      captureBtn.addEventListener("click", captureAndAnalyze);
+
+      // ===== Analysis Functions =====
+
+      function detectDarkSpotsAndScore(image, skinType) {
+        if (!image || image.empty()) return 0;
+
+        const gray = new cv.Mat();
+        cv.cvtColor(image, gray, cv.COLOR_BGR2GRAY);
+
+        const blurred = new cv.Mat();
+        cv.GaussianBlur(gray, blurred, new cv.Size(7, 7), 0);
+
+        let threshold = 50;
+        if (skinType.toLowerCase() === "oily") threshold = 40;
+        else if (skinType.toLowerCase() === "dry") threshold = 60;
+
+        const thresh = new cv.Mat();
+        cv.threshold(blurred, thresh, threshold, 255, cv.THRESH_BINARY_INV);
+
+        const kernel = cv.getStructuringElement(
+          cv.MORPH_RECT,
+          new cv.Size(3, 3)
+        );
+        const cleaned = new cv.Mat();
+        cv.morphologyEx(
+          thresh,
+          cleaned,
+          cv.MORPH_OPEN,
+          kernel,
+          new cv.Point(-1, -1),
+          2
+        );
+
+        const contours = new cv.MatVector();
+        const hierarchy = new cv.Mat();
+        cv.findContours(
+          cleaned,
+          contours,
+          hierarchy,
+          cv.RETR_EXTERNAL,
+          cv.CHAIN_APPROX_SIMPLE
+        );
+
+        let totalDarkArea = 0;
+        for (let i = 0; i < contours.size(); i++) {
+          totalDarkArea += cv.contourArea(contours.get(i));
+        }
+
+        const faceArea = image.rows * image.cols;
+        const score = faceArea > 0 ? totalDarkArea / faceArea : 0;
+        const finalScore = Math.round(score * 100);
+
+        gray.delete();
+        blurred.delete();
+        thresh.delete();
+        kernel.delete();
+        cleaned.delete();
+        contours.delete();
+        hierarchy.delete();
+
+        return Math.max(0, Math.min(100, finalScore));
+      }
+
+      function getSkinDullnessScore(image, age, skinType) {
+        if (!image || image.empty()) return 0;
+
+        const gray = new cv.Mat();
+        cv.cvtColor(image, gray, cv.COLOR_BGR2GRAY);
+
+        const meanLuminance = cv.mean(gray)[0];
+
+        const meanMat = new cv.Mat();
+        const stddevMat = new cv.Mat();
+        cv.meanStdDev(gray, meanMat, stddevMat);
+        const luminanceVariance = Math.pow(stddevMat.doubleAt(0, 0), 2);
+
+        const hsv = new cv.Mat();
+        cv.cvtColor(image, hsv, cv.COLOR_BGR2HSV);
+        const hsvChannels = new cv.MatVector();
+        cv.split(hsv, hsvChannels);
+        const saturation = hsvChannels.get(1);
+        const meanSaturation = cv.mean(saturation)[0];
+
+        const luminanceContrib = (255 - meanLuminance) / 255;
+        const saturationContrib = (255 - meanSaturation) / 255;
+        const varianceContrib = (10000 - luminanceVariance) / 10000;
+
+        let baseScore =
+          (luminanceContrib * 0.4 +
+            saturationContrib * 0.4 +
+            varianceContrib * 0.2) *
+          100;
+
+        let adjustedScore = baseScore + age * 0.1;
+        if (skinType === "dry") adjustedScore += 5;
+        else if (skinType === "oily") adjustedScore -= 3;
+
+        gray.delete();
+        meanMat.delete();
+        stddevMat.delete();
+        hsv.delete();
+        hsvChannels.delete();
+        saturation.delete();
+
+        return Math.round(Math.max(0, Math.min(100, adjustedScore)));
+      }
+
+      function getSkinHydrationScore(image, age, gender, skinType) {
+        if (!image || image.empty()) return 0;
+
+        const hsv = new cv.Mat();
+        const lab = new cv.Mat();
+        const luminance = new cv.Mat();
+
+        const numChannels = image.channels();
+        if (numChannels === 4) {
+          cv.cvtColor(image, luminance, cv.COLOR_RGBA2GRAY);
+          const bgr = new cv.Mat();
+          cv.cvtColor(image, bgr, cv.COLOR_RGBA2BGR);
+          cv.cvtColor(bgr, hsv, cv.COLOR_BGR2HSV);
+          cv.cvtColor(bgr, lab, cv.COLOR_BGR2Lab);
+          bgr.delete();
+        } else {
+          cv.cvtColor(image, luminance, cv.COLOR_BGR2GRAY);
+          cv.cvtColor(image, hsv, cv.COLOR_BGR2HSV);
+          cv.cvtColor(image, lab, cv.COLOR_BGR2Lab);
+        }
+
+        const hsvChannels = new cv.MatVector();
+        const labChannels = new cv.MatVector();
+        cv.split(hsv, hsvChannels);
+        cv.split(lab, labChannels);
+
+        const saturation = hsvChannels.get(1);
+        const bChannel = labChannels.get(2);
+
+        const gx = new cv.Mat();
+        const gy = new cv.Mat();
+        cv.Sobel(luminance, gx, cv.CV_32F, 1, 0, 3);
+        cv.Sobel(luminance, gy, cv.CV_32F, 0, 1, 3);
+        const gradMag = new cv.Mat();
+        cv.magnitude(gx, gy, gradMag);
+
+        const textureScore = cv.mean(gradMag)[0];
+        const oilinessScore = cv.mean(bChannel)[0];
+
+        const meanMatS = new cv.Mat();
+        const stddevMatS = new cv.Mat();
+        cv.meanStdDev(saturation, meanMatS, stddevMatS);
+        const uniformityScore = stddevMatS.doubleAt(0, 0);
+
+        const radianceScore = cv.mean(luminance)[0];
+
+        const textureContrib = 1.0 - Math.min(textureScore / 50, 1.0);
+        const oilinessContrib = oilinessScore / 255;
+        const uniformityContrib = (100 - Math.min(uniformityScore, 100)) / 100;
+        const radianceContrib = radianceScore / 255;
+
+        let baseScore =
+          (textureContrib * 0.3 +
+            oilinessContrib * 0.25 +
+            uniformityContrib * 0.25 +
+            radianceContrib * 0.2) *
+          100;
+
+        let adjustedScore = baseScore - age * 0.08;
+        if (skinType === "dry") adjustedScore -= 5;
+        else if (skinType === "oily") adjustedScore += 5;
+        if (gender === "male") adjustedScore += 3;
+        else if (gender === "female") adjustedScore -= 2;
+
+        hsv.delete();
+        lab.delete();
+        hsvChannels.delete();
+        labChannels.delete();
+        luminance.delete();
+        saturation.delete();
+        bChannel.delete();
+        gx.delete();
+        gy.delete();
+        gradMag.delete();
+        meanMatS.delete();
+        stddevMatS.delete();
+
+        return Math.round(Math.max(0, Math.min(100, adjustedScore)));
+      }
+
+      function getUnevenSkinToneScore(image, age, gender, skinType) {
+        if (!image || image.empty()) return 0;
+
+        const numChannels = image.channels();
+        const lab = new cv.Mat();
+
+        if (numChannels === 4) {
+          const bgr = new cv.Mat();
+          cv.cvtColor(image, bgr, cv.COLOR_RGBA2BGR);
+          cv.cvtColor(bgr, lab, cv.COLOR_BGR2Lab);
+          bgr.delete();
+        } else {
+          cv.cvtColor(image, lab, cv.COLOR_BGR2Lab);
+        }
+
+        const channels = new cv.MatVector();
+        cv.split(lab, channels);
+        const LChannel = channels.get(0);
+
+        const meanMat = new cv.Mat();
+        const stddevMat = new cv.Mat();
+        cv.meanStdDev(LChannel, meanMat, stddevMat);
+        const stdL = stddevMat.doubleAt(0, 0);
+
+        let baseScore = Math.min(100, Math.max(0, Math.floor(stdL / 2)));
+
+        if (skinType === "dry") baseScore += 5;
+        else if (skinType === "oily") baseScore -= 3;
+        baseScore += age * 0.1;
+
+        lab.delete();
+        channels.delete();
+        LChannel.delete();
+        meanMat.delete();
+        stddevMat.delete();
+
+        return Math.round(Math.max(0, Math.min(100, baseScore)));
+      }
+
+      function getWrinkleScore(image) {
+        if (!image || image.empty()) return 0;
+
+        let gray = null,
+          filtered = null,
+          edges = null; 
+        try {
+          const ch = image.channels();
+          if (ch > 1) {
+            gray = new cv.Mat();
+            try {
+              cv.cvtColor(image, gray, cv.COLOR_RGBA2GRAY);
+            } catch (e) {
+              cv.cvtColor(image, gray, cv.COLOR_BGR2GRAY);
+            }
+          } else {
+            gray = image.clone();
+          }
+
+          filtered = new cv.Mat();
+          try {
+            cv.bilateralFilter(gray, filtered, 7, 50, 50);
+          } catch (e) {
+            cv.GaussianBlur(gray, filtered, new cv.Size(5, 5), 0);
+          }
+
+          const data = filtered.data;
+          if (!data || data.length === 0) return 0;
+
+          const hist = new Uint32Array(256);
+          for (let i = 0; i < data.length; i++) hist[data[i]]++;
+
+          const half = Math.floor(data.length / 2);
+          let cumulative = 0,
+            median = 0;
+          for (let i = 0; i < 256; i++) {
+            cumulative += hist[i];
+            if (cumulative >= half) {
+              median = i;
+              break;
+            }
+          }
+
+          const lower = Math.max(0, Math.floor(0.66 * median));
+          const upper = Math.min(255, Math.floor(1.33 * median + 1));
+
+          edges = new cv.Mat();
+          try {
+            cv.Canny(filtered, edges, lower, upper, 3, true);
+          } catch (e) {
+            cv.Canny(filtered, edges, lower, upper);
+          }
+
+          const density = cv.countNonZero(edges) / (edges.rows * edges.cols);
+          return Math.max(
+            0,
+            Math.min(100, Math.round(Math.min(1.0, density * 4.0) * 100))
+          );
+        } finally {
+          if (gray) gray.delete();
+          if (filtered) filtered.delete();
+          if (edges) edges.delete();
+        }
+      }
+    </script>
+
+    <!-- Scanning Overlay -->
+    <div id="scanOverlay">
+      <img src="assets/scanning.gif" alt="Scanning..." />
+    </div>
+  </body>
+</html>

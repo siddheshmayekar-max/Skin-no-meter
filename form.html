@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DermaCare Flow</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:400&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+
+  <!-- ===================== ALL YOUR CSS (NO SKIP) ===================== -->
+<style>
+/* ===== NAME CSS ===== */
+@font-face {
+        font-family: "NotoSans-SemiBold";
+        src: url("./fonts/NotoSans-SemiBold.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "NotoSans-Medium";
+        src: url("./fonts/NotoSans-Medium.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Arima-Bold";
+        src: url("./fonts/Arima-Bold.ttf") format("truetype");
+      }
+
+      .font-noto-sans-semibold {
+        font-family: "NotoSans-SemiBold";
+      }
+
+      .font-noto-sans-medium {
+        font-family: "NotoSans-Medium";
+      }
+      .font-arima-bold {
+        font-family: "Arima-Bold";
+      }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        height: 100%;
+        background: linear-gradient(180deg, #f0ccb2 0%, #edcaae 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Noto Serif", serif;
+      }
+
+      .screen {
+        width: 100%;
+        max-width: 390px;
+        height: 100svh;
+        padding: 30px 20px; /* ✅ MOBILE DEFAULT */
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      /* Tablets & large devices (>= 768px, includes 1200x1920) */
+      @media (min-width: 768px) {
+        .screen {
+          padding: 60px 20px;
+        }
+      }
+
+      /* Orbit background */
+      .screen::before {
+        content: "";
+        position: absolute;
+        top: -180px;
+        left: -430px;
+        width: 420px;
+        aspect-ratio: 1;
+        background: url("assets/orbit-bg.png") center / contain no-repeat;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .screen > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Progress */
+      .progress {
+        height: 6px;
+        background-color: #eeb58d;
+        border-radius: 10px;
+      }
+
+      .progress-bar {
+        background-color: rgba(117, 48, 5, 1);
+        border-radius: 10px;
+      }
+
+      h1 {
+        font-size: 28px;
+        font-weight: 400;
+        color: rgba(117, 48, 5, 1);
+        text-align: center;
+        font-family: "Arima-Bold";
+      }
+
+      .subtitle {
+        font-size: 14px;
+        font-family: "NotoSans-Medium";
+
+        color: rgba(117, 48, 5, 1);
+        text-align: center;
+      }
+
+      /* Avatar */
+      .outer-circle {
+        width: 260px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background-color: #f5d3b9;
+        margin: 24px auto;
+        display: grid;
+        place-items: center;
+        position: relative;
+      }
+
+      .outer-circle::before {
+        content: "";
+        width: 220px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background-color: #f9e1d0;
+        position: absolute;
+      }
+
+      .photo-circle {
+        width: 180px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: url("assets/user-avatar.png") center / 115% no-repeat,
+          linear-gradient(180deg, #ffb27a, #f3c09c);
+        position: relative;
+        z-index: 1;
+      }
+
+      .photo-circle::after {
+        content: "";
+        position: absolute;
+        inset: 0px;
+        border-radius: 50%;
+        border: 2.5px dashed rgba(255, 255, 255, 0.95);
+      }
+
+      /* ===== INPUT WITH PSEUDO BORDER ===== */
+      .input-wrap {
+        position: relative;
+        margin-bottom: 18px;
+      }
+
+      /* dashed outline */
+      .input-wrap::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        border-radius: 34px;
+        border: 1.5px dashed rgba(255, 255, 255, 0.85);
+        pointer-events: none;
+        z-index: 3;
+      }
+
+      /* 🔥 SHADOW LAYER (BEHIND INPUT) */
+      .input-wrap::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 28px;
+        background: transparent;
+        box-shadow: 0 6px 10px rgba(122, 58, 11, 0.18);
+        z-index: 1; /* behind input */
+      }
+
+      /* actual input */
+      .form-control {
+        height: 56px;
+        border-radius: 28px;
+        border: none;
+        background: #e8c3a4;
+        padding-left: 30px;
+        font-size: 16px;
+        color: #8b4a1c;
+
+        position: relative;
+        z-index: 2;
+      }
+
+      .form-control::placeholder {
+        color: #b07a55;
+      }
+
+      .form-control:focus {
+        outline: none;
+        box-shadow: 0 6px 12px rgba(122, 58, 11, 0.25);
+        background: #eccbb0;
+      }
+
+      .form-control.error {
+        box-shadow: 0 0 0 2px rgba(164, 60, 60, 0.45);
+      }
+
+      /* ===== NEXT BUTTON RESPONSIVE FIX ===== */
+      .section2-next-btn {
+        height: 58px;
+        border-radius: 30px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #7a3a0b;
+        background: #fff;
+        border: none;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+      }
+
+      .section2-next-btn:focus,
+      .section2-next-btn:focus-visible,
+      .section2-next-btn:active {
+        outline: none !important;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12) !important;
+        background: #fff;
+      }
+
+      /* Mobile: stick to bottom with safe spacing */
+      @media (max-width: 576px) {
+        .section2-next-btn {
+          position: sticky;
+          bottom: 16px; /* safe gap from bottom */
+        }
+      }
+
+      /* Tablet & above: normal flow, aligned at end */
+      @media (min-width: 577px) {
+        .section2-next-btn {
+          position: static;
+        }
+      }
+/* ===== GENDER CSS ===== */
+
+      body {
+        background: linear-gradient(180deg, #f0ccb2 0%, #edcaae 100%);
+        display: flex;
+        justify-content: center;
+        font-family: "Noto Serif", serif;
+      }
+
+      /* Orbit background */
+      .screen::before {
+        content: "";
+        position: absolute;
+        top: -180px;
+        left: -430px;
+        width: 420px;
+        aspect-ratio: 1;
+        background: url("assets/orbit-bg.png") center / contain no-repeat;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ===== SCREEN ===== */
+      .screen {
+        width: 100%;
+        max-width: 390px;
+        height: 100svh;
+        padding: 30px 20px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      @media (min-width: 768px) {
+        .screen {
+          padding: 70px 20px;
+        }
+      }
+
+      /* ===== BACK BUTTON ===== */
+      .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(185, 135, 102, 0.74);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+      .back-btn::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        border: 2px dashed #fff;
+        border-radius: 50%;
+      }
+
+      /* ===== PROGRESS ===== */
+      .progress {
+        height: 6px;
+        background: #eeb58d;
+        border-radius: 10px;
+      }
+      .progress-bar {
+        background: #753005;
+      }
+
+      /* ===== TEXT ===== */
+      h1 {
+        font-family: "Arima-Bold";
+
+        text-align: center;
+        color: #753005;
+        margin-top: 20px;
+        font-size: 30px;
+      }
+      .subtitle {
+        font-family: "NotoSans-Medium";
+        text-align: center;
+        color: #753005;
+        font-size: 17px;
+        margin-bottom: 10px;
+      }
+
+      /* ===== CAROUSEL ===== */
+      .carousel-wrap {
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .gender-scroll {
+        display: flex;
+        align-items: center;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 40px 0 48px;
+      }
+      .gender-scroll::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* spacers = allow half visibility */
+      .spacer {
+        flex: 0 0 65%;
+      }
+
+      /* ===== CARD ===== */
+      .gender-card {
+        flex: 0 0 auto;
+        scroll-snap-align: center;
+        padding: 0 8px;
+        text-align: center;
+        transform: scale(0.9);
+        opacity: 0.55;
+        transition: 0.35s ease;
+        cursor: pointer;
+      }
+
+      .gender-card.active {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      /* ===== RINGS ===== */
+      .gender-ring {
+        width: 300px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: #f5d3b9;
+        display: grid;
+        place-items: center;
+        position: relative;
+      }
+
+      .gender-ring::before {
+        content: "";
+        width: 270px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: #f9e1d0;
+        position: absolute;
+      }
+
+      .gender-photo {
+        width: 235px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        position: relative;
+        z-index: 2;
+      }
+
+      .gender-photo::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2.5px dashed #fff;
+      }
+
+      .gender-card.active .gender-photo::after {
+        border-color: #753005;
+      }
+
+      /* FIXED LABEL */
+      .fixed-gender-label {
+        font-family: "Arima-SemiBold";
+        text-align: center;
+        font-size: 30px;
+        color: #753005;
+        margin-top: 10px;
+        min-height: 30px;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+      }
+
+      .fixed-gender-label.fade-out {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      /* color placeholders */
+      .gender-card[data-gender="Male"] .gender-photo {
+        background-image: url("assets/user-male.png");
+        background-position: center;
+        background-size: 299px;
+        background-repeat: no-repeat;
+      }
+      .gender-card[data-gender="Female"] .gender-photo {
+        background-image: url("assets/user-female.png");
+        background-position: center;
+        background-size: 299px;
+        background-repeat: no-repeat;
+      }
+
+      .gender-label {
+        margin-top: 14px;
+        font-size: 22px;
+        color: #753005;
+        font-weight: 600;
+      }
+
+      /* ===== BUTTON ===== */
+      .section3-next-btn {
+        height: 56px;
+        border-radius: 30px;
+        font-size: 18px;
+        background: #fff;
+        color: #753005;
+        border: none;
+        font-weight: 600;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+      }
+
+      .section3-next-btn:focus,
+      .section3-next-btn:focus-visible,
+      .section3-next-btn:active {
+        outline: none !important;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12) !important;
+        background: #fff;
+      }
+/* ===== AGE CSS ===== */
+body {
+        background: linear-gradient(180deg, #f0ccb2 0%, #edcaae 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Noto Serif", serif;
+      }
+
+      .screen {
+        width: 100%;
+        max-width: 390px;
+        height: 100svh;
+        padding: 30px 20px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      @media (min-width: 768px) {
+        .screen {
+          padding: 60px 20px;
+        }
+      }
+
+      /* Orbit BG */
+      .screen::before {
+        content: "";
+        position: absolute;
+        top: -180px;
+        left: -430px;
+        width: 420px;
+        aspect-ratio: 1;
+        background: url("assets/orbit-bg.png") center / contain no-repeat;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .screen > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Progress */
+      .progress {
+        height: 6px;
+        background-color: #eeb58d;
+        border-radius: 10px;
+      }
+
+      .progress-bar {
+        background-color: rgba(117, 48, 5, 1);
+        border-radius: 10px;
+      }
+
+      h1 {
+        font-size: 28px;
+        color: rgba(117, 48, 5, 1);
+        text-align: center;
+        font-family: "Arima-Bold";
+        margin-top: 12px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+        font-family: "NotoSans-Medium";
+        color: rgba(117, 48, 5, 1);
+        text-align: center;
+        margin-bottom: 28px;
+      }
+
+      /* Picker */
+      .picker-wrapper {
+        position: relative;
+        height: 392px;
+        overflow: hidden;
+        margin-top: 30px;
+      }
+
+      .picker {
+        height: 100%;
+        overflow-y: auto;
+        scroll-snap-type: y mandatory;
+        padding: 168px 0;
+        text-align: center;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .picker::-webkit-scrollbar {
+        display: none;
+      }
+
+      .age {
+        height: 56px;
+        line-height: 56px;
+        font-size: 35px;
+        color: rgba(117, 48, 5, 0.35);
+        scroll-snap-align: center;
+        transition: all 0.2s ease;
+      }
+
+      /* 🔥 BIGGER ACTIVE NUMBER */
+      .age.active {
+        font-size: 50px;
+        font-weight: 700;
+        color: rgba(117, 48, 5, 1);
+      }
+
+      .indicator {
+        height: 56px;
+        position: absolute;
+        top: 50%;
+        left: 35%;
+        width: 30%;
+        height: 52px;
+        transform: translateY(-50%);
+        border-top: 1px solid #753005;
+        border-bottom: 1px solid #753005;
+        pointer-events: none;
+      }
+
+      /* Button */
+      .section-next-btn {
+        height: 58px;
+        border-radius: 30px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #7a3a0b;
+        background: #fff;
+        border: none;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+      }
+
+      @media (max-width: 576px) {
+        .section-next-btn {
+          position: sticky;
+          bottom: 16px;
+        }
+      }
+
+      /* ===== BACK BUTTON ===== */
+      .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(185, 135, 102, 0.74);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+      .back-btn::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        border: 2px dashed #fff;
+        border-radius: 50%;
+      }
+/* ===== SKIN TYPE CSS ===== */
+
+      body {
+        background: linear-gradient(180deg, #f0ccb2 0%, #edcaae 100%);
+        display: flex;
+        justify-content: center;
+        font-family: "Noto Serif", serif;
+      }
+
+      /* ===== SCREEN ===== */
+      .screen {
+        width: 100%;
+        max-width: 390px;
+        height: 100svh;
+        padding: 30px 20px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      /* ===== BACK BUTTON ===== */
+      .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(185, 135, 102, 0.74);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+
+      .back-btn::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        border: 2px dashed #fff;
+        border-radius: 50%;
+      }
+
+      /* ===== PROGRESS ===== */
+      .progress {
+        height: 6px;
+        background: #eeb58d;
+        border-radius: 10px;
+      }
+
+      .progress-bar {
+        background: #753005;
+      }
+
+      /* ===== TEXT ===== */
+      h1 {
+        text-align: center;
+        color: #753005;
+        margin-top: 20px;
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #753005;
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+
+      /* ===== CAROUSEL ===== */
+      .carousel-wrap {
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .skin-scroll {
+        display: flex;
+        align-items: center;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        padding: 40px 0 48px;
+      }
+
+      .skin-scroll::-webkit-scrollbar {
+        display: none;
+      }
+
+      .spacer {
+        flex: 0 0 65%;
+      }
+
+      /* ===== CARD ===== */
+      .skin-card {
+        flex: 0 0 auto;
+        scroll-snap-align: center;
+        padding: 0 10px;
+        text-align: center;
+        transform: scale(0.88);
+        opacity: 0.5;
+        transition: 0.35s ease;
+        cursor: pointer;
+      }
+
+      .skin-card.active {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      /* ===== RINGS ===== */
+      .skin-ring {
+        width: 260px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: #f4d1b6;
+        display: grid;
+        place-items: center;
+        position: relative;
+      }
+
+      .skin-ring::before {
+        content: "";
+        width: 215px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: #f8e0cf;
+        position: absolute;
+      }
+
+      .skin-photo {
+        width: 165px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        position: relative;
+        z-index: 2;
+      }
+
+      .skin-photo::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2.5px dashed #fff;
+      }
+
+      .skin-card.active .skin-photo::after {
+        border-color: #753005;
+      }
+
+      /* Demo colors */
+      .normal {
+        background: linear-gradient(#f7c4b8, #f1a8a0);
+      }
+
+      .dry {
+        background: linear-gradient(#e3efe9, #c9ded6);
+      }
+
+      .oily {
+        background: linear-gradient(#d5efe7, #bde0d3);
+      }
+
+      /* ===== FIXED LABEL ===== */
+      .fixed-skin-label {
+        text-align: center;
+        font-size: 26px;
+        color: #753005;
+        margin-top: 10px;
+        min-height: 30px;
+        font-weight: 600;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+      }
+
+      .fixed-skin-label.fade-out {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      /* ===== BUTTON ===== */
+      .section4-next-btn {
+        height: 56px;
+        border-radius: 30px;
+        font-size: 18px;
+        background: #fff;
+        color: #753005;
+        border: none;
+        font-weight: 600;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+      }</style>
+
+      <body>
+
+<!-- ================= STEP 1 : NAME ================= -->
+<section class="step" id="step-1">
+    <section id="section-2" class="w-100 d-flex justify-content-center">
+      <div class="screen">
+        <!-- Progress -->
+        <div class="d-flex align-items-center gap-2 mb-3 w-50 mx-auto">
+          <div class="progress flex-grow-1">
+            <div class="progress-bar" style="width: 25%"></div>
+          </div>
+          <span class="font-noto-sans-semibold" style="color: #7a3a0b">
+            1/4
+          </span>
+        </div>
+
+        <h1 class="mb-1 mt-1">Write your name</h1>
+        <p class="subtitle mb-4">
+          Your name helps us customize your skin analysis.
+        </p>
+
+        <div class="outer-circle">
+          <div class="photo-circle"></div>
+        </div>
+
+        <!-- Inputs -->
+        <div class="mt-3 mt-md-5">
+          <!-- First Name -->
+          <div class="input-wrap">
+            <input
+              id="firstName"
+              type="text"
+              class="form-control"
+              placeholder="First name"
+            />
+          </div>
+          <small
+            id="firstError"
+            style="
+              display: none;
+              margin-left: 20px;
+              margin-bottom: 10px;
+              font-size: 12px;
+              color: #a43c3c;
+            "
+          >
+            Only letters and spaces are allowed. No numbers or special
+            characters.
+          </small>
+
+          <!-- Last Name -->
+          <div class="input-wrap">
+            <input
+              id="lastName"
+              type="text"
+              class="form-control"
+              placeholder="Last name"
+            />
+          </div>
+          <small
+            id="lastError"
+            style="
+              display: none;
+              margin-left: 20px;
+              font-size: 12px;
+              margin-bottom: 10px;
+              color: #a43c3c;
+            "
+          >
+            Only letters and spaces are allowed. No numbers or special
+            characters.
+          </small>
+        </div>
+
+        <!-- Button -->
+        <div class="mt-auto pb-3">
+          <button class="btn section2-next-btn w-100" onclick="validateName()">
+            Next
+          </button>
+        </div>
+      </div>
+    </section></section>
+
+<!-- ================= STEP 2 : GENDER ================= -->
+<section class="step d-none" id="step-2">
+    <button class="back-btn">
+      <i class="fa-solid fa-arrow-left" style="color: #fff"></i>
+    </button>
+    <section class="section3 w-100 d-flex justify-content-center">
+      <div class="screen">
+        <!-- Progress -->
+        <div class="d-flex align-items-center gap-2 mb-3 w-50 mx-auto">
+          <div class="progress flex-grow-1">
+            <div class="progress-bar" style="width: 50%"></div>
+          </div>
+          <span style="color: #753005; font-weight: 600">2/4</span>
+        </div>
+
+        <h1>Select Your Gender</h1>
+        <p class="subtitle">
+          Select your gender for the most accurate recommendations.
+        </p>
+
+        <!-- Carousel -->
+        <div class="carousel-wrap">
+          <div class="gender-scroll" id="genderScroll">
+            <div class="spacer"></div>
+
+            <div class="gender-card" data-gender="Male">
+              <div class="gender-ring"><div class="gender-photo"></div></div>
+            </div>
+
+            <div class="gender-card" data-gender="Female">
+              <div class="gender-ring"><div class="gender-photo"></div></div>
+            </div>
+
+            <div class="spacer"></div>
+          </div>
+        </div>
+
+        <div class="fixed-gender-label" id="fixedGenderLabel">Male</div>
+
+        <div class="mt-auto pb-3">
+          <button id="nextBtn" class="btn section3-next-btn w-100" disabled>
+            Next
+          </button>
+        </div>
+      </div>
+    </section></section>
+
+<!-- ================= STEP 3 : AGE ================= -->
+<section class="step d-none" id="step-3">
+    <button class="back-btn" id="backBtn">
+      <i class="fa-solid fa-arrow-left" style="color: #fff"></i>
+    </button>
+    <section class="w-100 d-flex justify-content-center">
+      <div class="screen">
+        <!-- Back + Progress -->
+        <div class="d-flex align-items-center gap-2 mb-3 w-50 mx-auto">
+          <div class="progress flex-grow-1">
+            <div class="progress-bar" style="width: 75%"></div>
+          </div>
+
+          <span class="font-noto-sans-semibold" style="color: #7a3a0b">
+            3/4
+          </span>
+        </div>
+
+        <!-- Title -->
+        <h1>How Old Are You</h1>
+        <p class="subtitle">
+          Your age helps us personalize your skin analysis.
+        </p>
+
+        <!-- Picker -->
+        <div class="picker-wrapper">
+          <div class="indicator"></div>
+          <div class="picker" id="picker"></div>
+        </div>
+
+        <!-- Button -->
+        <div class="mt-auto pb-3">
+          <button class="btn section-next-btn w-100">Next</button>
+        </div>
+      </div>
+    </section></section>
+
+<!-- ================= STEP 4 : SKIN TYPE ================= -->
+<section class="step d-none" id="step-4">
+    <button class="back-btn">
+      <i class="fa-solid fa-arrow-left" style="color: #fff"></i>
+    </button>
+
+    <section class="section4 w-100 d-flex justify-content-center">
+      <div class="screen">
+        <!-- Progress -->
+        <div class="d-flex align-items-center gap-2 mb-3 w-50 mx-auto">
+          <div class="progress flex-grow-1">
+            <div class="progress-bar" style="width: 100%"></div>
+          </div>
+          <span style="color: #753005; font-weight: 600">4/4</span>
+        </div>
+
+        <h1>Select Your Skin Type</h1>
+        <p class="subtitle">
+          Choose the option that best matches your skin.
+        </p>
+
+        <!-- Carousel -->
+        <div class="carousel-wrap">
+          <div class="skin-scroll" id="skinScroll">
+            <div class="spacer"></div>
+
+            <div class="skin-card" data-skin="Normal Skin">
+              <div class="skin-ring">
+                <div class="skin-photo normal"></div>
+              </div>
+            </div>
+
+            <div class="skin-card" data-skin="Dry Skin">
+              <div class="skin-ring">
+                <div class="skin-photo dry"></div>
+              </div>
+            </div>
+
+            <div class="skin-card" data-skin="Oily Skin">
+              <div class="skin-ring">
+                <div class="skin-photo oily"></div>
+              </div>
+            </div>
+
+            <div class="spacer"></div>
+          </div>
+        </div>
+
+        <div class="fixed-skin-label" id="fixedSkinLabel">
+          Normal Skin
+        </div>
+
+        <div class="mt-auto pb-3">
+<button
+  id="nextBtn"
+  class="section4-next-btn w-100"
+  disabled
+  onclick="goToCamera()"
+>
+  Finish
+</button>
+
+        </div>
+      </div>
+    </section></section>
+    <script>
+  /* ================= STEP NAVIGATION ================= */
+  function showStep(step) {
+    document.querySelectorAll(".step").forEach(s => {
+      s.classList.add("d-none");
+    });
+    document.getElementById("step-" + step).classList.remove("d-none");
+    window.scrollTo(0, 0);
+  }
+
+  /* ================= NAME VALIDATION → GENDER ================= */
+  function validateName() {
+    const first = document.getElementById("firstName");
+    const last = document.getElementById("lastName");
+    const firstError = document.getElementById("firstError");
+    const lastError = document.getElementById("lastError");
+
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    let valid = true;
+
+    if (!first.value.trim() || !nameRegex.test(first.value)) {
+      first.classList.add("error");
+      firstError.style.display = "block";
+      valid = false;
+    } else {
+      first.classList.remove("error");
+      firstError.style.display = "none";
+    }
+
+    if (!last.value.trim() || !nameRegex.test(last.value)) {
+      last.classList.add("error");
+      lastError.style.display = "block";
+      valid = false;
+    } else {
+      last.classList.remove("error");
+      lastError.style.display = "none";
+    }
+
+    if (valid) {
+      showStep(2);
+    }
+  }
+
+  /* ================= GENDER LOGIC ================= */
+  const genderScroll = document.getElementById("genderScroll");
+  const genderCards = document.querySelectorAll(".gender-card");
+  const genderNext = document.querySelector("#step-2 #nextBtn");
+  const genderLabel = document.getElementById("fixedGenderLabel");
+
+  let activeGender = "";
+
+  function centerGender(card, smooth = true) {
+    const left =
+      card.offsetLeft - genderScroll.clientWidth / 2 + card.offsetWidth / 2;
+    genderScroll.scrollTo({ left, behavior: smooth ? "smooth" : "auto" });
+  }
+
+  function updateGender() {
+    const center = genderScroll.scrollLeft + genderScroll.clientWidth / 2;
+
+    genderCards.forEach(card => {
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const active = Math.abs(center - cardCenter) < card.offsetWidth * 0.35;
+      card.classList.toggle("active", active);
+
+      if (active) {
+        const g = card.dataset.gender;
+        if (g !== activeGender) {
+          activeGender = g;
+          genderLabel.textContent = g;
+          genderNext.disabled = false;
+        }
+      }
+    });
+  }
+
+  if (genderScroll) {
+    genderScroll.addEventListener("scroll", () =>
+      requestAnimationFrame(updateGender)
+    );
+
+    genderCards.forEach(card =>
+      card.addEventListener("click", () => centerGender(card))
+    );
+
+    window.addEventListener("load", () => {
+      centerGender(genderCards[0], false);
+      updateGender();
+    });
+
+    genderNext.onclick = () => showStep(3);
+  }
+
+  /* ================= AGE LOGIC ================= */
+  const picker = document.getElementById("picker");
+  const ages = [];
+
+  if (picker) {
+    for (let i = 10; i <= 100; i++) {
+      const el = document.createElement("div");
+      el.className = "age";
+      el.textContent = i;
+      picker.appendChild(el);
+      ages.push(el);
+    }
+
+    function updateAge() {
+      const center = picker.scrollTop + picker.clientHeight / 2;
+      ages.forEach(item => {
+        const offset = item.offsetTop + item.offsetHeight / 2;
+        item.classList.toggle("active", Math.abs(center - offset) < 26);
+      });
+    }
+
+    picker.addEventListener("scroll", updateAge);
+    picker.scrollTop = (36 - 10) * 52;
+    setTimeout(updateAge, 50);
+  }
+
+  document.querySelector("#step-3 .section-next-btn").onclick = () => {
+    showStep(4);
+  };
+
+  /* ================= SKIN TYPE LOGIC ================= */
+  const skinScroll = document.getElementById("skinScroll");
+  const skinCards = document.querySelectorAll(".skin-card");
+  const skinLabel = document.getElementById("fixedSkinLabel");
+  const skinNext = document.querySelector("#step-4 #nextBtn");
+
+  let activeSkin = "";
+
+  function centerSkin(card, smooth = true) {
+    const left =
+      card.offsetLeft - skinScroll.clientWidth / 2 + card.offsetWidth / 2;
+    skinScroll.scrollTo({ left, behavior: smooth ? "smooth" : "auto" });
+  }
+
+  function updateSkin() {
+    const center = skinScroll.scrollLeft + skinScroll.clientWidth / 2;
+
+    skinCards.forEach(card => {
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const active = Math.abs(center - cardCenter) < card.offsetWidth * 0.35;
+      card.classList.toggle("active", active);
+
+      if (active) {
+        activeSkin = card.dataset.skin;
+        skinLabel.textContent = activeSkin;
+        skinNext.disabled = false;
+      }
+    });
+  }
+
+  if (skinScroll) {
+    skinScroll.addEventListener("scroll", () =>
+      requestAnimationFrame(updateSkin)
+    );
+
+    skinCards.forEach(card =>
+      card.addEventListener("click", () => centerSkin(card))
+    );
+
+    window.addEventListener("load", () => {
+      centerSkin(skinCards[0], false);
+      updateSkin();
+    });
+  }
+
+  /* ================= BACK BUTTONS ================= */
+  document.querySelector("#step-2 .back-btn").onclick = () => showStep(1);
+  document.querySelector("#step-3 .back-btn").onclick = () => showStep(2);
+  document.querySelector("#step-4 .back-btn").onclick = () => showStep(3);
+  
+</script>
+<script>
+  function goToCamera() {
+    window.location.href = "./camera-open.html";
+  }
+</script>
+
+      </body>
+</html>
+
+
